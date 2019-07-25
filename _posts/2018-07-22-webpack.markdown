@@ -23,26 +23,52 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 
 ###### 安装
 ` npm install webpack webpack-cli -g  ` 
-##### 使用
+###### 使用
 1. 创建一个项目在`src`目录下新建`index.html`,`index.css`,`index.js`以及`assets`文件夹等一个基础的项目结构
 2. 在项目根目录下使用`npm init` 创建`package.json`文件
 3. `npm install webpack -D`   `npm install webpack-cli -D`  分别安装webpack和webpack-cli
 4. 在package.json中，添加一个npm scripts
->  
-    ```
-        "scripts": {
-            "build": "webpack --mode production"
-        },
-        "devDependencies": {
-            "webpack": "^4.37.0",
-            "webpack-cli": "^3.3.6",
-        }
-    ```
-    (```)
-        function fun(){
-            echo "这是一句非常牛逼的代码";
-        }
-        fun();
-    (```)
+```
+    "scripts": {
+        "build": "webpack --mode production"
+    },
+    "devDependencies": {
+        "webpack": "^4.37.0",
+        "webpack-cli": "^3.3.6",
+    }
+```
 此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
-5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能
+5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~
+
+### 基础用法
+
+###### entry
+多个代码模块中会有一个起始的`.js`文件，这便是webpack构建的入口，常见项目中可能入口有一个也可能有多个。
++ 单个入口
+```
+    module.exports = {
+        entry: {
+            main: './src/index.js'  
+        }
+    }
+```
++ 多个入口
+```
+    module.exports = {
+        entry: {
+            main: [
+                './src/foo.js',
+                './src/bar.js'
+            ]
+        }
+    }
+```
+###### resolve
+
++ resolve.alias
+```
+    alias: {
+        utils: path.resolve(__dirname, 'src/utils'),  // import 'utils/query.js' 等同于 'import [项目绝对路径]/src/utils/query.js'
+        utils$: path.resolve(__dirname, 'src/utils')  // 只会匹配 import 'utils'
+    }
+```
