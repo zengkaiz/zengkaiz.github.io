@@ -28,7 +28,8 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 2. 在项目根目录下使用`npm init` 创建`package.json`文件
 3. `npm install webpack -D`   `npm install webpack-cli -D`  分别安装webpack和webpack-cli
 4. 在package.json中，添加一个npm scripts
->  (```)
+>  
+    ```
         "scripts": {
             "build": "webpack --mode production"
         },
@@ -36,6 +37,12 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
             "webpack": "^4.37.0",
             "webpack-cli": "^3.3.6",
         }
+    ```
+    (```)
+        function fun(){
+            echo "这是一句非常牛逼的代码";
+        }
+        fun();
     (```)
 此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
 5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能
