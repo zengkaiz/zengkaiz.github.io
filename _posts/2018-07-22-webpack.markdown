@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "深入浅出"
+title:      "深入浅出webpack"
 subtitle:   ""
 date:       2019-05-20 12:00:00
 author:     "zack"
@@ -10,4 +10,6 @@ tags:
     - Javascript
 ---
 
-### 深入浅出
+### 深入浅出webpack
+
+    webpack是一个现代Javascript应用程序的静态模块打包器
