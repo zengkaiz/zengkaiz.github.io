@@ -10,6 +10,20 @@ tags:
     - Javascript
 ---
 
-### 深入浅出webpack
+### 前言
 
-    webpack是一个现代Javascript应用程序的静态模块打包器
+* webpack是一个Javascript应用程序的静态模块打包器，接下来我们将通过理解以下四个核心概念： *
++ entry（入口）
++ output（输出）
++ loader（转换器）
++ plugins（插件）
+* 一起使用webpack定制前端开发环境 *
+
+### 安装和使用
+
+# 安装
+npm install webpack webpack-cli -g   
+# 使用
+* 1. 创建一个项目在src目录下新建index.html,index.css,index.js以及assets文件夹等一个基础的项目结构 *
+* 2. 在项目根目录下使用 npm init 创建package.json文件
+* 3. npm install webpack -D   npm install webpack-cli -D  分别安装webpack和webpack-cli
