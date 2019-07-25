@@ -12,19 +12,30 @@ tags:
 
 ### 前言
 
-** webpack是一个Javascript应用程序的静态模块打包器，接下来我们将通过理解以下四个核心概念： **
+webpack是一个Javascript应用程序的静态模块打包器，接下来我们将通过理解以下四个核心概念:
 + entry（入口）
 + output（输出）
 + loader（转换器）
 + plugins（插件）
-** 一起来使用webpack定制前端开发环境 **
+一起来使用webpack定制前端开发环境
 
 ### 安装和使用
 
 ###### 安装
-``` npm install webpack webpack-cli -g  ``` 
+` npm install webpack webpack-cli -g  ` 
 ##### 使用
 1. 创建一个项目在`src`目录下新建`index.html`,`index.css`,`index.js`以及`assets`文件夹等一个基础的项目结构
 2. 在项目根目录下使用`npm init` 创建`package.json`文件
 3. `npm install webpack -D`   `npm install webpack-cli -D`  分别安装webpack和webpack-cli
 4. 在package.json中，添加一个npm scripts
+>  (```)
+        "scripts": {
+            "build": "webpack --mode production"
+        },
+        "devDependencies": {
+            "webpack": "^4.37.0",
+            "webpack-cli": "^3.3.6",
+        }
+    (```)
+此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
+5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能
