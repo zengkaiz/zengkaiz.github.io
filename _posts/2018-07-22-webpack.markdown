@@ -64,11 +64,16 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
     }
 ```
 ###### resolve
-
 + resolve.alias
+模糊匹配：如import 'utils/query.js' 等同于 'import [项目绝对路径]/src/utils/query.js'
 ```
     alias: {
-        utils: path.resolve(__dirname, 'src/utils'),  // import 'utils/query.js' 等同于 'import [项目绝对路径]/src/utils/query.js'
-        utils$: path.resolve(__dirname, 'src/utils')  // 只会匹配 import 'utils'
+        utils: path.resolve(__dirname, 'src/utils')
+    }
+```
+精确匹配：给定对象的键后末尾添加$,如匹配 import 'utils'
+```
+    alias: {
+        utils$: path.resolve(__dirname, 'src/utils')
     }
 ```
