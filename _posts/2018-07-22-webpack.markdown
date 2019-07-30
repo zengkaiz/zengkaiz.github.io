@@ -149,4 +149,5 @@ loader就是webpack提供的一种处理多种格式文件格式的机制，可�
         type: 'javascript/esm'
     }
 ```
+使用loader
 ##### plugin
