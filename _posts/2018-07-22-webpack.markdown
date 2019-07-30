@@ -21,9 +21,9 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 
 ### 安装和使用
 
-###### 安装
+##### 安装
 ` npm install webpack webpack-cli -g  ` 
-###### 使用
+##### 使用
 1. 创建一个项目在`src`目录下新建`index.html`,`index.css`,`index.js`以及`assets`文件夹等一个基础的项目结构
 2. 在项目根目录下使用`npm init` 创建`package.json`文件
 3. `npm install webpack -D`   `npm install webpack-cli -D`  分别安装webpack和webpack-cli
@@ -42,7 +42,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 
 ### 基础用法
 
-###### entry
+##### entry
 多个代码模块中会有一个起始的`.js`文件，这便是webpack构建的入口，常见项目中可能入口有一个也可能有多个。
 + 单个入口
 ```
@@ -63,7 +63,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
         }
     }
 ```
-###### resolve
+##### resolve
 + resolve.alias
 模糊匹配：如import 'utils/query.js' 等同于 'import [项目绝对路径]/src/utils/query.js'
 ```
@@ -77,3 +77,76 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
         utils$: path.resolve(__dirname, 'src/utils')
     }
 ```
++ resolve.extensions
+此配置是一个数组，数组的顺序代表匹配后缀的优先级
+```
+    extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx', '.css']
+```
+如在src/utils下面有一个common.js文件时，就可以这样引用 import * as common from 'utils/common'
++ resolve.modules
+告诉webpack解析模块时应该搜索的目录，绝对路径和相对路径都能使用
+相对路径将类似于 Node 查找 'node_modules' 的方式进行查找
+使用绝对路径，将只在给定目录中搜索
+```
+    resolve: {
+        modules: ['node_modules']
+    }
+```
+可以添加目录到模块搜索目录，此目录优先级高于node_modules,这样配置可以在某种程度上简化模块的查找，提升构建速度
+```
+    resolve: {
+        modules:[path.resolve(_dirname, 'src'), 'node_modules']
+    }
+```
++ resolve.mainFiles
+默认解析使用index.js这个文件，也可配置
+```
+    resolve: {
+        mainFiles: ['index']  // 可以添加其他默认使用的文件名
+    }
+```
++ resolve.mainFields
+？
+更多关于`resolve`，请移步[官网](https://webpack.docschina.org/configuration/resolve/ "resolve")
+
+##### loader
+loader就是webpack提供的一种处理多种格式文件格式的机制，可以理解是一个转换器，负责把某种文件格式的内容转换为webpack可以支持打包的模块。
+默认webpack会把所有的依赖打包成js文件，当我们需要处理不同类型的文件时可以在`module.rules`配置
+###### 条件
++ `{test: Condition}` 匹配特定条件
++ `{include: Condition }` 匹配特定条件
++ `{exclude: Condition }` 排除特定条件
++ `{and: Condition }` 必须匹配数组中的所有条件
++ `{or: Condition }` 匹配数组中任何一个条件
++ `{not: Condition }` 必须排除这个条件
+```
+    rules: [
+        {
+            test: /\.jsx?/,  //正则,
+            include: [
+                path.resolve(_dirname, 'src') // 字符串，注意是绝对路径
+            ],
+            not: [
+                (value) => {/*...*/ return true;} // 函数，高度自定义
+            ]
+        }
+    ]
+```
+###### 模块类型
+不同的模块类型类似于配置了不同的`loader`，webpack会针对性的进行处理，目前有5种模块类型：
+1. `javascript/auto`
+2. `javascript/esm`
+3. `javascript/dynamic`
+4. `javascript/json`
+5. `webassembly/experimental`
+举例，如所有JS代码文件都设置为强制使用ESM类型：
+```
+    {
+        test: /\.js/,
+        include: [
+            path.resolve(_dirname, 'src),
+        ],
+        type: 'javascript/esm'
+    }
+```
+##### plugin
