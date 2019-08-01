@@ -63,6 +63,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
         }
     }
 ```
+
 ##### resolve
 + resolve.alias
 模糊匹配：如import 'utils/query.js' 等同于 'import [项目绝对路径]/src/utils/query.js'
@@ -106,6 +107,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
     }
 ```
 + resolve.mainFields
+
 ？
 更多关于`resolve`，请移步[官网](https://webpack.docschina.org/configuration/resolve/ "resolve")
 
@@ -113,12 +115,14 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 loader就是webpack提供的一种处理多种格式文件格式的机制，可以理解是一个转换器，负责把某种文件格式的内容转换为webpack可以支持打包的模块。
 默认webpack会把所有的依赖打包成js文件，当我们需要处理不同类型的文件时可以在`module.rules`配置
 ###### 条件
+
 + `{test: Condition}` 匹配特定条件
 + `{include: Condition }` 匹配特定条件
 + `{exclude: Condition }` 排除特定条件
 + `{and: Condition }` 必须匹配数组中的所有条件
 + `{or: Condition }` 匹配数组中任何一个条件
 + `{not: Condition }` 必须排除这个条件
+
 ```
     rules: [
         {
@@ -216,7 +220,7 @@ webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配
 ```
 
 ###### DefinePlugin
-用途：允许创建一个在编译时可以配置的全局常量。这可能会对开发模式和生产模式的构建允许不同的行为非常有用
+用途：允许创建一个在编译时可以配置的全局常量。这可能会对开发模式和生产模式的构建允许不同的行为非常有用<br>
 用法：
 
 >  每个传进 DefinePlugin 的键值都是一个标志符或者多个用 . 连接起来的标志符。<br>
@@ -243,10 +247,10 @@ webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配
 ```
 ```
     console.log(VERSION)
-    
+
 ```
 ###### copy-webpack-plugin
-用途：将不经过webpack处理，但我们希望也能出现在build目录下的文件，使用CopyWebpackPlugin处理
+用途：将不经过webpack处理，但我们希望也能出现在build目录下的文件，使用CopyWebpackPlugin处理<br>
 用法：
 ```
     const CopyWebpackPlugin = require('copy-webpack-plugin')
