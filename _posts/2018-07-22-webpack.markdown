@@ -138,11 +138,13 @@ loader就是webpack提供的一种处理多种格式文件格式的机制，可�
 ```
 ###### 模块类型
 不同的模块类型类似于配置了不同的`loader`，webpack会针对性的进行处理，目前有5种模块类型：
+
 1. `javascript/auto`    支持现有各种JS代码模块类型————CommonJS、AMD、ESM
 2. `javascript/esm`     ECMAScript modules，例如CommonJS和AMD等不支持，是.mjs文件的默认类型
 3. `javascript/dynamic`     CommonJS和AMD，排除ESM
 4. `javascript/json`    JSON格式数据，是.json的文件默认类型
 5. `webassembly/experimental`   WebAssembly modules 是.wasm文件的默认类型
+
 举例，如所有JS代码文件都设置为强制使用ESM类型：
 ```
     {
@@ -195,8 +197,11 @@ module.rules 的匹配规则主要是用于匹配loader，使用`use`字段：
     ]
 ```
 webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配置就是普通类型，还可配置`pre`或`post`,分别对应前置类型和后置类型的loader
+
 + tips：还有一种行内loader，即如`const json=require('json-loader!./file.json')` ，不建议在开发中使用
+
 总结下来，loader按照**前置**->**行内**->**普通**->**后置**的顺序执行
+
 ###### module.noParse
 用于配置哪些模块文件的内容不需要解析，忽略的文件不应该含有import，require，define的调用，或其他导入机制，可以提高整体的构建速度
 ```
@@ -206,6 +211,7 @@ webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配
         }
     }
 ```
+
 ##### plugin
 用于处理更多其他的一些构建任务，通过添加我们需要的plugin，可以满足更多构建任务中的特殊需求。
 例如，要使用压缩JS代码的`uglifyjs-webpack-plugin`插件，只需在配置中通过`plugins`字段添加新的plugin即可：
@@ -222,7 +228,6 @@ webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配
 ###### DefinePlugin
 用途：允许创建一个在编译时可以配置的全局常量。这可能会对开发模式和生产模式的构建允许不同的行为非常有用<br>
 用法：
-
 >  每个传进 DefinePlugin 的键值都是一个标志符或者多个用 . 连接起来的标志符。<br>
 如果这个值是一个字符串，它会被当作一个代码片段来使用。 <br>
 如果这个值不是字符串，它会被转化为字符串(包括函数)。<br>
