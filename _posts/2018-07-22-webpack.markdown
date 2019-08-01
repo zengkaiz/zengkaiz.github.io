@@ -134,11 +134,11 @@ loader就是webpack提供的一种处理多种格式文件格式的机制，可�
 ```
 ###### 模块类型
 不同的模块类型类似于配置了不同的`loader`，webpack会针对性的进行处理，目前有5种模块类型：
-1. `javascript/auto`
-2. `javascript/esm`
-3. `javascript/dynamic`
-4. `javascript/json`
-5. `webassembly/experimental`
+1. `javascript/auto`    支持现有各种JS代码模块类型————CommonJS、AMD、ESM
+2. `javascript/esm`     ECMAScript modules，例如CommonJS和AMD等不支持，是.mjs文件的默认类型
+3. `javascript/dynamic`     CommonJS和AMD，排除ESM
+4. `javascript/json`    JSON格式数据，是.json的文件默认类型
+5. `webassembly/experimental`   WebAssembly modules 是.wasm文件的默认类型
 举例，如所有JS代码文件都设置为强制使用ESM类型：
 ```
     {
@@ -149,5 +149,114 @@ loader就是webpack提供的一种处理多种格式文件格式的机制，可�
         type: 'javascript/esm'
     }
 ```
-使用loader
+###### 使用loader
+module.rules 的匹配规则主要是用于匹配loader，使用`use`字段：
+```
+    rules: [
+        {
+            test: /\.less/,
+            use: [
+                'style-loader',
+                {
+                    loader: 'css-loader',
+                    options: {
+                        importLoaders: 1   //数字1代表当前loader之后的一个loader
+                    }
+                },
+                {
+                    loader: 'less-loader',
+                    options: {
+                        noIeCompat: true
+                    }
+                }
+            ]
+        }
+    ]
+```
+一个模块文件可以经过多个loader的转换处理，在同一个rule中执行顺序是从最后配置的loader开始往前。
+上述从后往前的顺序是在同一个rule中进行，那如果多个rule匹配同一个模块文件，此时的loader的应用顺序又是怎样的呢？
+```
+    rules: [
+        {
+            enforce: 'pre',
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'eslint-loader'
+        },
+        {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'babel-loader'
+        }
+    ]
+```
+webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配置就是普通类型，还可配置`pre`或`post`,分别对应前置类型和后置类型的loader
++ tips：还有一种行内loader，即如`const json=require('json-loader!./file.json')` ，不建议在开发中使用
+总结下来，loader按照**前置**->**行内**->**普通**->**后置**的顺序执行
+###### module.noParse
+用于配置哪些模块文件的内容不需要解析，忽略的文件不应该含有import，require，define的调用，或其他导入机制，可以提高整体的构建速度
+```
+    module.exports = {
+        module: {
+            noParse: /jquery|lodash/
+        }
+    }
+```
 ##### plugin
+用于处理更多其他的一些构建任务，通过添加我们需要的plugin，可以满足更多构建任务中的特殊需求。
+例如，要使用压缩JS代码的`uglifyjs-webpack-plugin`插件，只需在配置中通过`plugins`字段添加新的plugin即可：
+```
+    const UglifyPlugin = require('uglifyjs-webpack-plugin')
+    
+    module.exports = {
+        plugins: [
+            new UglifyPlugin()
+        ]
+    }
+```
+###### DefinePlugin
+用途：允许创建一个在编译时可以配置的全局常量。这可能会对开发模式和生产模式的构建允许不同的行为非常有用
+用法：
+>  每个传进 DefinePlugin 的键值都是一个标志符或者多个用 . 连接起来的标志符。
+>       如果这个值是一个字符串，它会被当作一个代码片段来使用。
+>       如果这个值不是字符串，它会被转化为字符串(包括函数)。
+>       如果这个值是一个对象，它所有的 key 会被同样的方式定义。
+>       如果在一个 key 前面加了 typeof,它会被定义为 typeof 调用。
+```
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.host': getDeployConfigDefine(),
+        VERSION: 'v1'
+      })
+    ]
+    // ....
+    function getDeployConfigDefine() {
+        let config = {}
+            Object.keys(env).forEach(function(key) {
+                config[key] = `'${env[key].api}'`
+            })
+        return config
+    }
+```
+```
+    console.log(VERSION)
+```
+###### copy-webpack-plugin
+用途：将不经过webpack处理，但我们希望也能出现在build目录下的文件，使用CopyWebpackPlugin处理
+用法：
+```
+    const CopyWebpackPlugin = require('copy-webpack-plugin')
+    const resolve = (file) => path.resolve(__dirname, file)
+
+    plugins: [
+        new CopyWebpackPlugin([
+            {
+                from:  resolve('./static'),     // 配置来源
+                to:  to: resolve('./dist/static'),      // 配置目标路径
+            }   
+        ])
+    ]
+```
+更多配置请参考[copy-webpack-plugin](https://github.com/webpack-contrib/copy-webpack-plugin "copy-webpack-plugin")
+
+###### extract-text-webpack-plugin
