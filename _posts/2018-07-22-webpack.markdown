@@ -214,6 +214,7 @@ webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配
 
 ##### plugin
 用于处理更多其他的一些构建任务，通过添加我们需要的plugin，可以满足更多构建任务中的特殊需求。
+webpack内置的插件可以通过`webpack.插件名`获取，[内置插件](https://webpack.docschina.org/plugins "内置插件")，非内置插件需要先在`package.json`安装下
 例如，要使用压缩JS代码的`uglifyjs-webpack-plugin`插件，只需在配置中通过`plugins`字段添加新的plugin即可：
 ```
     const UglifyPlugin = require('uglifyjs-webpack-plugin')
@@ -273,3 +274,29 @@ webpack提供了`enforce`字段来配置当前rule的loader类型，倘若没配
 更多配置请参考[copy-webpack-plugin](https://github.com/webpack-contrib/copy-webpack-plugin "copy-webpack-plugin")
 
 ###### extract-text-webpack-plugin
+用途：用来将依赖的CSS分离出来成为单独的文件<br>
+用法：
+```
+    const ExtracTextPlugin = require('extract-text-webpack-plugin')
+
+    module.exports = {
+        // ...
+        module:{
+            rules: [
+                {
+                    test: /\.css$/,
+                    // 因为此插件需要干涉模块转换的内容，所以需要使用它对应的loader
+                    use: ExtracTextPlugin.extract({
+                        fallback: 'style-loader',
+                        use: 'css-loader'
+                    })
+                }
+            ]
+        }
+        plugins: [
+            new ExtracTextPlugin('index.css')
+        ]
+    }
+```
+
+##### 搭建基本开发环境
