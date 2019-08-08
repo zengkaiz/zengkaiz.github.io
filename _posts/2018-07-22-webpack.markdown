@@ -44,6 +44,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 它是一个独立的`npm package`，使用前先安装到项目的开发依赖中：  
 `npm install html-webpack-plugin -D `  
 然后在webpack.config.js中配置  
+
 ```
 cosnt HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -114,9 +115,11 @@ module.exports = {
   ],
 }   
 ``` 
+
 8. 处理图片文件  
 file-laoder 用于处理很多类型的文件，主要作用是直接输出文件，把构建后的文件路径返回 
-预先安装file-loader   
+预先安装file-loader  
+
 
 ```
  npm install css-loader --save-dev
