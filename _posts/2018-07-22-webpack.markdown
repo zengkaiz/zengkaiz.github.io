@@ -16,7 +16,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 + entry（入口）
 + output（输出）
 + loader（转换器）
-+ plugins（插件）
++ plugins（插件）  
 一起来使用webpack定制前端开发环境
 
 ### 安装和使用
@@ -39,8 +39,135 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 ```
 此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
 5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~
+6. 关联HTML  
+` html-webpack-plugin` 为html文件引入外部资源如script、link等，可以生成创建html入口文件，比如单页面可以生成一个html文件入口，配置n个html-webpack-plugin可以生成n个页面入口
+它是一个独立的`npm package`，使用前先安装到项目的开发依赖中：  
+`npm install html-webpack-plugin -D `  
+然后在webpack.config.js中配置  
+```
+cosnt HtmlWebpackPlugin = require('html-webpack-plugin')
 
-### 基础用法
+module.exports = {
+    // ...
+    plugins: [
+        new HtmlWebpackPlugin({     // 打包输出html
+            title： 'webpack test app',     // 生成的html文件的标题
+            minify: {   // 压缩html文件
+                removeComments: true, //移除HTML中的注释
+                collapseWhitespace: true, // 删除空白符与换行符
+                miniFyCSS: true   // 压缩内联css
+            },
+            filename: 'index.html',     // 输出的html文件的名称
+        })
+    ]
+}
+```
+更多关于[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin "html-webpack-plugin")
+7. 构建CSS   
+css-loader 负责解析CSS代码，主要是处理CSS中的依赖，例如`@import`和`url()`等引用外部文件的声明   
+style-loader 将css-loader解析的结果转变成JS代码，运行时动态插入`style`标签来让CSS代码生效  
+此时CSS代码会转变成JS和index.js一起打包了，需要单独把CSS分离需要[extract-text-webpack-plugin](https://webpack.docschina.org/plugins/extract-text-webpack-plugin "extract-text-webpack-plugin")插件  
+上述基础上我们还会使用Less/Sass等CSS预处理器，请看下面例子：  
+预先安装css-loader、style-loder、less-loader:  
+```
+ npm install css-loader --save-dev
+```   
+```
+ npm install style-loder --save-dev
+```
+```
+ npm install less-loader --save-dev
+```
+```
+ const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+module.exports = {
+  // ...
+  module: {
+    rules: [
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({ 
+          fallback: 'style-loader',
+          use: 'css-loader',
+        }), 
+      },
+      {
+        test: /\.less$/,
+        use: ExtractTextPlugin.extract({ 
+          fallback: 'style-loader',
+          use: [
+              'css-loader',
+              'less-loader'
+          ],
+        }), 
+      },
+    ],
+  },
+  plugins: [
+    new ExtractTextPlugin('index.css'),
+  ],
+}   
+``` 
+8. 处理图片文件  
+file-laoder 用于处理很多类型的文件，主要作用是直接输出文件，把构建后的文件路径返回 
+预先安装file-loader   
+```
+ npm install css-loader --save-dev
+```   
+index.js  
+```
+    import img from './img.png'
+```
+```
+    rules: [
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {},
+          },
+        ],
+      },
+    ]
+```  
+9. 使用Babel  
+Babel 可以编译ES新特性的工具，配置Babel以便使用ES6，ES7标准来编写js代码  
+安装：  
+```
+    npm install -D babel-loader @babel/core @babel/preset-env webpack
+```
+```
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                include:[
+                    path.resolve(__dirname, 'src'),
+                ],
+                use: {
+                    loader: 'babel-loader'
+                }
+            }
+        ]
+    }
+```
+10. 启动静态服务  
+以上步骤已经处理了多种的文件类型的webpack配置，接下来可以使用[webpack-dev-server](https://github.com/webpack/webpack-dev-server "webpack-dev-server")在本地开启服务来进行开发和调试。  
+安装：  
+```
+    npm install webpack-dev-server --save-dev
+```
+在`package.json`添加启动命令：  
+```
+    "scripts": {
+        "build": "webpack --mode production",
+        "start": "webpack-dev-server --mode development"
+    }
+```  
+尝试运行`npm run start`然后就可以访问 http://localhost:8080 查看页面啦！
+### 核心概念
 
 ##### entry
 多个代码模块中会有一个起始的`.js`文件，这便是webpack构建的入口，常见项目中可能入口有一个也可能有多个。
@@ -65,7 +192,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 ```
 
 ##### resolve
-+ resolve.alias<br>
++ resolve.alias  
 模糊匹配：如import 'utils/query.js' 等同于 'import [项目绝对路径]/src/utils/query.js'
 ```
     alias: {
@@ -78,13 +205,13 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
         utils$: path.resolve(__dirname, 'src/utils')
     }
 ```
-+ resolve.extensions<br>
++ resolve.extensions  
 此配置是一个数组，数组的顺序代表匹配后缀的优先级
 ```
     extensions: ['.wasm', '.mjs', '.js', '.json', '.jsx', '.css']
 ```
 如在src/utils下面有一个common.js文件时，就可以这样引用 import * as common from 'utils/common'
-+ resolve.modules<br>
++ resolve.modules  
 告诉webpack解析模块时应该搜索的目录，绝对路径和相对路径都能使用
 相对路径将类似于 Node 查找 'node_modules' 的方式进行查找
 使用绝对路径，将只在给定目录中搜索
@@ -99,16 +226,16 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
         modules:[path.resolve(_dirname, 'src'), 'node_modules']
     }
 ```
-+ resolve.mainFiles<br>
++ resolve.mainFiles  
 默认解析使用index.js这个文件，也可配置
 ```
     resolve: {
         mainFiles: ['index']  // 可以添加其他默认使用的文件名
     }
 ```
-+ resolve.mainFields<br>
++ resolve.mainFields  
 
-？<br>
+？  
 更多关于`resolve`，请移步[官网](https://webpack.docschina.org/configuration/resolve/ "resolve")
 
 ##### loader
