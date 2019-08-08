@@ -24,10 +24,10 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 ##### 安装
 ` npm install webpack webpack-cli -g  ` 
 ##### 使用
-1. 创建一个项目在`src`目录下新建`index.html`,`index.css`,`index.js`以及`assets`文件夹等一个基础的项目结构
-2. 在项目根目录下使用`npm init` 创建`package.json`文件
-3. `npm install webpack -D`   `npm install webpack-cli -D`  分别安装webpack和webpack-cli
-4. 在package.json中，添加一个npm scripts
+* 创建一个项目在`src`目录下新建`index.html`,`index.css`,`index.js`以及`assets`文件夹等一个基础的项目结构
+* 在项目根目录下使用`npm init` 创建`package.json`文件
+* `npm install webpack -D`   `npm install webpack-cli -D`  分别安装webpack和webpack-cli
+* 在package.json中，添加一个npm scripts
 ```
     "scripts": {
         "build": "webpack --mode production"
@@ -38,8 +38,8 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
     }
 ```
 此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
-5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~  
-6. 关联HTML  
+* 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~  
+* 关联HTML  
 `html-webpack-plugin` 为html文件引入外部资源如script、link等，可以生成创建html入口文件，比如单页面可以生成一个html文件入口，配置n个html-webpack-plugin可以生成n个页面入口
 它是一个独立的`npm package`，使用前先安装到项目的开发依赖中：  
 `npm install html-webpack-plugin -D `  
@@ -64,7 +64,7 @@ module.exports = {
 }
 ```
 更多关于[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin "html-webpack-plugin")  
-7. 构建CSS   
+* 构建CSS   
 css-loader 负责解析CSS代码，主要是处理CSS中的依赖，例如`@import`和`url()`等引用外部文件的声明   
 style-loader 将css-loader解析的结果转变成JS代码，运行时动态插入`style`标签来让CSS代码生效  
 此时CSS代码会转变成JS和index.js一起打包了，需要单独把CSS分离需要[extract-text-webpack-plugin](https://webpack.docschina.org/plugins/extract-text-webpack-plugin "extract-text-webpack-plugin")插件  
@@ -114,7 +114,7 @@ module.exports = {
   ],
 }   
 ``` 
-8. 处理图片文件  
+* 处理图片文件  
 file-laoder 用于处理很多类型的文件，主要作用是直接输出文件，把构建后的文件路径返回 
 预先安装file-loader  
 
@@ -141,7 +141,7 @@ index.js
       },
     ]
 ```  
-9. 使用Babel  
+* 使用Babel  
 Babel 可以编译ES新特性的工具，配置Babel以便使用ES6，ES7标准来编写js代码  
 安装：  
 ```
@@ -162,7 +162,7 @@ Babel 可以编译ES新特性的工具，配置Babel以便使用ES6，ES7标准�
         ]
     }
 ```
-10. 启动静态服务  
+* 启动静态服务  
 以上步骤已经处理了多种的文件类型的webpack配置，接下来可以使用[webpack-dev-server](https://github.com/webpack/webpack-dev-server "webpack-dev-server")在本地开启服务来进行开发和调试。  
 安装：  
 ```
