@@ -44,7 +44,6 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 它是一个独立的`npm package`，使用前先安装到项目的开发依赖中：  
 `npm install html-webpack-plugin -D `  
 然后在webpack.config.js中配置  
-
 ```
 cosnt HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -64,12 +63,14 @@ module.exports = {
 }
 ```
 更多关于[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin "html-webpack-plugin")
+
 7. 构建CSS   
 css-loader 负责解析CSS代码，主要是处理CSS中的依赖，例如`@import`和`url()`等引用外部文件的声明   
 style-loader 将css-loader解析的结果转变成JS代码，运行时动态插入`style`标签来让CSS代码生效  
 此时CSS代码会转变成JS和index.js一起打包了，需要单独把CSS分离需要[extract-text-webpack-plugin](https://webpack.docschina.org/plugins/extract-text-webpack-plugin "extract-text-webpack-plugin")插件  
 上述基础上我们还会使用Less/Sass等CSS预处理器，请看下面例子：  
 预先安装css-loader、style-loder、less-loader:  
+
 ```
  npm install css-loader --save-dev
 ```   
