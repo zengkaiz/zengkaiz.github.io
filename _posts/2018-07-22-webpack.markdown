@@ -40,10 +40,11 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
 此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
 5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~
 6. 关联HTML  
-` html-webpack-plugin` 为html文件引入外部资源如script、link等，可以生成创建html入口文件，比如单页面可以生成一个html文件入口，配置n个html-webpack-plugin可以生成n个页面入口
+`html-webpack-plugin` 为html文件引入外部资源如script、link等，可以生成创建html入口文件，比如单页面可以生成一个html文件入口，配置n个html-webpack-plugin可以生成n个页面入口
 它是一个独立的`npm package`，使用前先安装到项目的开发依赖中：  
 `npm install html-webpack-plugin -D `  
 然后在webpack.config.js中配置  
+
 ```
 cosnt HtmlWebpackPlugin = require('html-webpack-plugin')
 
@@ -72,12 +73,15 @@ style-loader 将css-loader解析的结果转变成JS代码，运行时动态插�
 ```
  npm install css-loader --save-dev
 ```   
+
 ```
  npm install style-loder --save-dev
 ```
+
 ```
  npm install less-loader --save-dev
 ```
+
 ```
  const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
@@ -119,6 +123,7 @@ index.js
 ```
     import img from './img.png'
 ```
+
 ```
     rules: [
       {
