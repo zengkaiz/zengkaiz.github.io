@@ -38,7 +38,7 @@ webpack是一个Javascript应用程序的静态模块打包器，接下来我们
     }
 ```
 此时`npm run build`就会发现新增了一个`dist`目录，里面存放着webpack构建的main.js文件
-5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~
+5. 最后还需要一个`webpack.config.js`配置文件，配置实际项目中需要的功能,一起来配置吧~  
 6. 关联HTML  
 `html-webpack-plugin` 为html文件引入外部资源如script、link等，可以生成创建html入口文件，比如单页面可以生成一个html文件入口，配置n个html-webpack-plugin可以生成n个页面入口
 它是一个独立的`npm package`，使用前先安装到项目的开发依赖中：  
@@ -63,7 +63,7 @@ module.exports = {
     ]
 }
 ```
-更多关于[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin "html-webpack-plugin")
+更多关于[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin "html-webpack-plugin")  
 
 7. 构建CSS   
 css-loader 负责解析CSS代码，主要是处理CSS中的依赖，例如`@import`和`url()`等引用外部文件的声明   
@@ -126,7 +126,6 @@ file-laoder 用于处理很多类型的文件，主要作用是直接输出文�
 ```   
 
 index.js  
-
 ```
     import img from './img.png'
 ```
