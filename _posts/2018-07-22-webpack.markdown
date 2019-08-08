@@ -64,7 +64,6 @@ module.exports = {
 }
 ```
 更多关于[html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin "html-webpack-plugin")  
-
 7. 构建CSS   
 css-loader 负责解析CSS代码，主要是处理CSS中的依赖，例如`@import`和`url()`等引用外部文件的声明   
 style-loader 将css-loader解析的结果转变成JS代码，运行时动态插入`style`标签来让CSS代码生效  
@@ -115,7 +114,6 @@ module.exports = {
   ],
 }   
 ``` 
-
 8. 处理图片文件  
 file-laoder 用于处理很多类型的文件，主要作用是直接输出文件，把构建后的文件路径返回 
 预先安装file-loader  
