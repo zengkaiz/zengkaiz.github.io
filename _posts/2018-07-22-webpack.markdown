@@ -175,7 +175,74 @@ Babel 可以编译ES新特性的工具，配置Babel以便使用ES6，ES7标准�
         "start": "webpack-dev-server --mode development"
     }
 ```  
+当 mode 为 development 时，具备 hot reload 的功能，即当源码变化时，会更新当前页面
 尝试运行`npm run start`然后就可以访问 http://localhost:8080 查看页面啦！
+可以通过`devServer`字段配置 webpack-dev-server,下面是几个常用配置：  
+sevServer.proxy：  
+访问单独的后端开发服务器APi，并且希望在同域名下发送API请求，可以使用`proxy`代理  
+```
+module.exports = {
+    // ...
+     devServer: {
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3000',
+                pathRewrite: {'^/api' : ''}
+            }
+        }
+    }
+}
+```  
+同域名下请求到 /api/orders 将会被代理到请求 http://localhost:3000/orders  
+sevServer.port:   
+指定要监听的端口号  
+```
+    devServer: {
+        port: 8000
+    }
+```
+sevServer.publicPath :  
+用于指定构建好的文件在浏览器中用什么路径去访问，默认是'/'，假设运行在 http://localhost:8000 ，并且output.filename 被设置为bundle.js，则此包可通过http://localhost:8000/bundle.js 访问，也可修改指定目录访问或使用一个完整的URL。  
+```
+    devServer: {
+        publicPath: '/assets/'
+    }
+```  
+sevServer.contentBase :  
+用于配置提供额外静态文件内容的目录,即不经过wabpack构建，但是需要在webpack-dev-server中提供访问的静态资源。  
+publicPath的优先级高于contentBase，publicPath是配置构建好的结果以什么路径去访问，而contentBase是配置额外的静态内容的访问路径。  
+```
+    devServer: {
+        contentBase: path.join(__dirname, 'public')
+    }
+```  
+```
+    devServer: {
+        // 多个目录提供内容
+        contentBase: [path.join(__dirname, 'public'), path.join(__dirname, 'assets')]
+    }
+```
+devServer.after:  
+在服务内部所有其它中间件之后，提供执行自定义中间件的功能。  
+```
+    devServer: {
+        after: function(app, server) {
+            //do something
+        }
+    }
+```   
+devServer.before:  
+在服务内部的所有其他中间件之前，执行自定义中间件的功能。
+```
+    devServer: {
+        before: function(app, server) {
+           app.get('/some/path', function(req, res){
+               res.json({ custom: 'response'})
+           })
+        }
+    }
+```  
+更多配置请看[dev-server](https://webpack.docschina.org/configuration/dev-server/ "dev-server")
 
 ### 核心概念
 
@@ -390,7 +457,6 @@ webpack内置的插件可以通过`webpack.插件名`获取，[内置插件](htt
 ```
 ```
     console.log(VERSION)
-
 ```
 * copy-webpack-plugin
 用途：将不经过webpack处理，但我们希望也能出现在build目录下的文件，使用CopyWebpackPlugin处理<br>
