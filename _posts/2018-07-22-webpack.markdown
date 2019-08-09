@@ -202,7 +202,7 @@ sevServer.port:
     }
 ```
 sevServer.publicPath :  
-用于指定构建好的文件在浏览器中用什么路径去访问，默认是'/'，假设运行在 http://localhost:8000 ，并且output.filename 被设置为bundle.js，则此包可通过http://localhost:8000/bundle.js 访问，也可修改指定目录访问或使用一个完整的URL。  
+用于指定构建好的文件在浏览器中用什么路径去访问，默认是'/'，假设运行在 http://localhost:8000 ，并且`output.filename` 被设置为bundle.js，则此包可通过http://localhost:8000/bundle.js 访问，也可修改指定目录访问或使用一个完整的URL。  
 ```
     devServer: {
         publicPath: '/assets/'
@@ -210,7 +210,7 @@ sevServer.publicPath :
 ```  
 sevServer.contentBase :  
 用于配置提供额外静态文件内容的目录,即不经过wabpack构建，但是需要在webpack-dev-server中提供访问的静态资源。  
-publicPath的优先级高于contentBase，publicPath是配置构建好的结果以什么路径去访问，而contentBase是配置额外的静态内容的访问路径。  
+`publicPath`的优先级高于`contentBase`，publicPath是配置构建好的结果以什么路径去访问，而contentBase是配置额外的静态内容的访问路径。  
 ```
     devServer: {
         contentBase: path.join(__dirname, 'public')
