@@ -147,7 +147,7 @@ p.then(data=>{
 ```
 同步的时候我们是直接触发，那异步的时候呢？没错，这里我们使用发布-订阅的方式，此时我们就需要将需要发布的事件先订阅，到成功或失败时在依次执行这些回调。
 接下来我们加上这块的代码，定义onResolvedCallbacks，onRejectedCallbacks分别存储成功和失败需要执行的函数。
-
+<font color="#dd0000">this.onResolvedCallbacks = []</font>
 ```
 const PENDDING = 'PENDDING'
 const FULFILLED = 'FULFILLED'
