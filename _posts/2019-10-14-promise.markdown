@@ -1,0 +1,267 @@
+---
+layout:     post
+title:      "一起学习手写promise"
+subtitle:   ""
+date:       2019-10-14 12:00:00
+author:     "zack"
+header-img: "img/post-bg-js-version.jpg"
+catalog: true
+tags:
+    - Javascript
+---
+
+###### 什么是Promise？
+
+首先我们来看下Promise的基础概念，它是异步编程的一种解决方案，解决了
+1. 解决并发问题 （同步多个异步方法的执行结果）
+2. 链式调用问题，解决多个回调嵌套问题 
+
+再来看一下promise的基础用法，
+```
+let p = new Promise((resolve, reject)=>{
+    resolve('hello zack')
+})
+p.then(data=>{
+    console.log(data)
+}, err=>{
+    console.log(err)
+})
+```
+观察这个new的Promise的实例可以发现：
+每次new一个promise都需要传入一个函数（规范称为执行器：exector），执行器函数是立即执行的
+```
+class Promise {
+    constructor(exector) {
+        exector()
+   }
+}
+module.exports = Promise
+```
+exector()函数中具体做了什么呢？可以看到执行器函数接受两个参数，一个是成功的执行resolve，一个失败的执行reject
+```
+class Promise {
+    constructor(exector) {
+        // 成功的执行函数
+        let resolve = ()=>{}
+        // 失败的执行函数
+        let reject = ()=>{}
+        exector(resolve,reject)
+    }
+}
+module.exports = Promise
+```
+这里我们要知道默认promise有三个状态，初始态pendding => resolve 成功态fulfilled, 初始态pendding => reject 失败态rejected，并且只有在pendding时候才可以改变状态，此过程不可逆。那么我们就可以在成功执行的函数resolve中改变状态为fulfilled，失败执行的函数reject中改变状态为rejected。并且无论成功或者失败执行的函数都需要将成功的值或失败的原因返回
+所以我们先来定义三种状态：PENDDING，FULFILLED，REJECTED
+```
+const PENDDING = 'PENDDING'
+const FULFILLED = 'FULFILLED'
+const REJECTED = 'REJECTED'
+class Promise {
+    constructor(exector) {
+        // 成功后的返回值
+        this.value = undefined
+        // 失败的返回原因
+        this.reason = undefined
+        // 初始化为初始态
+        this.status = PENDDING
+        // 成功的执行函数
+        let resolve = (value)=>{
+            // 只有在状态为pendding时可以改变为成功态
+            if(this.status === PENDDING){
+                this.status = FULFILLED
+                this.value = value
+            }
+        }
+        // 失败的执行函数
+        let reject = (reason)=>{
+            // 只有在状态为pendding时可以改变为失败态
+            if(this.status === PENDDING){
+                this.status = REJECTED
+                this.reason = reason
+            }
+        }
+        exector(resolve,reject)
+    }
+}
+module.exports = Promise
+```
+继续观察我们的Promise的基础用法，不难发现每个promise都有一个then方法,此方法有两个可选参数成功后的回调onFulfilled，失败后的回调onRejected,没传的话给默认参数，
+接下里给咱们自己的promise也加上then方法
+```
+const PENDDING = 'PENDDING'
+const FULFILLED = 'FULFILLED'
+const REJECTED = 'REJECTED'
+class Promise {
+    constructor(exector) {
+        // 成功后的返回值
+        this.value = undefined
+        // 失败的返回原因
+        this.reason = undefined
+        // 初始化为初始态
+        this.status = PENDDING
+        // 成功的执行函数
+        let resolve = (value)=>{
+            // 只有在状态为pendding时可以改变为成功态
+            if(this.status === PENDDING){
+                this.status = FULFILLED
+                this.value = value
+            }
+        }
+        // 失败的执行函数
+        let reject = (reason)=>{
+            // 只有在状态为pendding时可以改变为失败态
+            if(this.status === PENDDING){
+                this.status = REJECTED
+                this.reason = reason
+            }
+        }
+        exector(resolve,reject)
+    }
+    then(onFulfilled, onRejected) {
+        // 状态是成功态的时候执行成功的回调onFulfilled
+        if(this.status === FULFILLED){
+            onFulfilled(this.value)
+        }
+        // 状态是失败态的时候执行失败的回调onRejected
+        if(this.status === REJECTED){
+            onRejected(this.reason)
+        }
+    }
+}
+module.exports = Promise
+```
+看到这里细心的同学就会发现then方法里成功态的时候执行成功的方法，失败态的时候执行失败的方法，那如果是初始态PENDDING的时候呢？
+其实也就是我们改下之前写的基础用法将我们的执行函数改为异步的，就会出现执行then的时候状态还是PENDDING。
+```
+let p = new Promise((resolve, reject)=>{
+    // 将执行的函数改为异步的
+    setTimeout(()=>{
+        resolve('hello zack')
+    }, 1000)
+})
+p.then(data=>{
+    console.log(data)
+}, err=>{
+    console.log(err)
+})
+```
+同步的时候我们是直接触发，那异步的时候呢？没错，就是使用发布-订阅的方式，此时我们就需要将需要发布的事件先订阅，到成功或失败时在依次执行这些回调。
+接下来我们加上这块的代码，定义onResolvedCallbacks，onRejectedCallbacks分别存储成功和失败需要执行的函数。
+```
+const PENDDING = 'PENDDING'
+const FULFILLED = 'FULFILLED'
+const REJECTED = 'REJECTED'
+class Promise {
+    constructor(exector) {
+        // 成功后的返回值
+        this.value = undefined
+        // 失败的返回原因
+        this.reason = undefined
+        // 初始化为初始态
+        this.status = PENDDING
+        // 存储成功时需要执行的事件的数组
+        this.onResolvedCallbacks = []
+        // 存储失败时需要执行的事件的数组
+        this.onRejectedCallbacks = []
+        // 成功的执行函数
+        let resolve = (value)=>{
+            // 只有在状态为pendding时可以改变为成功态
+            if(this.status === PENDDING){
+                this.status = FULFILLED
+                this.value = value
+                // 发布存储的成功后需要执行的回调
+                this.onResolvedCallbacks.forEach(fn=>fn())
+            }
+       }
+        // 失败的执行函数
+        let reject = (reason)=>{
+            // 只有在状态为pendding时可以改变为失败态
+            if(this.status === PENDDING){
+                this.status = REJECTED
+                this.reason = reason
+                // 发布存储的失败后需要执行的回调
+                this.onRejectedCallbacks.forEach(fn=>fn())
+            }
+        }
+        exector(resolve,reject)
+    }
+    then(onFulfilled, onRejected) {
+        // 状态是成功态的时候执行成功的回调onFulfilled
+        if(this.status === FULFILLED){
+            onFulfilled(this.value)
+        }
+        // 状态是失败态的时候执行失败的回调onRejected
+        if(this.status === REJECTED){
+            onRejected(this.reason)
+        }
+        // 状态是初始态PENDDING时
+        if(this.status === PENDDING){
+            // 订阅成功后需要执行的回调
+            this.onResolvedCallbacks.push(()=>{
+                 onFulfilled(this.value)
+            })
+            // 订阅失败后需要执行的回调
+            this.onRejectedCallbacks.push(()=>{
+                onRejected(this.reason)
+            })
+        }
+    }
+}
+module.exports = Promise
+```
+写到这里基本前文中提到的Promise解决的第一个问题就解决了，但是第二个如何解决链式调用，解决恶心的回调地狱问题的呢？
+先来看个简单的举例：有个需求先读第一个文件获取到第二个文件的文件名再去拿获取到的文件名去打开第二个文件获取数据
+```
+let fs = require('fs')
+
+// 回调地狱
+// fs.readFile('./name.txt','utf8',(err,data)=>{
+//     if(err){
+//        return 
+//     }
+//     fs.readFile(data,'utf8',(err,data)=>{
+//         if(err){
+//            return 
+//         }
+//         console.log(data)
+//     })
+// })
+```
+大家可以看到如果有n个文件一直往下读取，将会嵌套很多层，代码非常恶心。
+如何改写成promise写法来解决呢？如果需要改造成promise，就先将回调的方法改造成promise
+```
+function readFile(...args){
+    return new Promise((resolve,reject)=>{
+        fs.readFile(...args,function(err,data){
+            if(err)return
+            resolve(data)
+        })
+    })
+}
+
+readFile('./name.txt', 'utf8').then(data=>{
+    return readFile(data, 'utf8')
+}, err =>{
+    console.log(err)
+}).then(data=>{
+    console.log(data)
+}, err =>{
+    console.log(err)
+})
+```
+通过我们的改写会发现，要想实现链式调用then方法必须返回的是一个新的Promise，因此可以采用链式调用写法，在then方法后面再调用另外一个then方法。第一个回调函数完成以后，会将返回结果作为参数，传入第二个回调函数。如果返回一个普通值 会走下一个then的成功，抛出错误执行then的失败方法。
+所以我们改写下then让其返回一个新的Promise来支持链式调用。
+```
+class Promise {
+    constructor() {
+        // ...
+    }
+    then(onFulfilled, onRejected) {
+        let newPromise = new Promise((resolve,reject)=>{
+            // 将之前写的then方法的逻辑都放在这里
+        })
+        return newPromise
+    }
+}
+module.exports = Promise
+```
