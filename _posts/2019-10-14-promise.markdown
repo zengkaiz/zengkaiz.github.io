@@ -147,7 +147,8 @@ p.then(data=>{
 ```
 同步的时候我们是直接触发，那异步的时候呢？没错，就是使用发布-订阅的方式，此时我们就需要将需要发布的事件先订阅，到成功或失败时在依次执行这些回调。
 接下来我们加上这块的代码，定义onResolvedCallbacks，onRejectedCallbacks分别存储成功和失败需要执行的函数。
-```
+
+```
 const PENDDING = 'PENDDING'
 const FULFILLED = 'FULFILLED'
 const REJECTED = 'REJECTED'
@@ -209,8 +210,10 @@ class Promise {
 }
 module.exports = Promise
 ```
+
 写到这里基本前文中提到的Promise解决的第一个问题就解决了，但是第二个如何解决链式调用，解决恶心的回调地狱问题的呢？
 先来看个简单的举例：有个需求先读第一个文件获取到第二个文件的文件名再去拿获取到的文件名去打开第二个文件获取数据
+
 ```
 let fs = require('fs')
 
