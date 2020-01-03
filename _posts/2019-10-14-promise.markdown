@@ -37,7 +37,7 @@ class Promise {
 }
 module.exports = Promise
 ```
-exector()函数中具体做了什么呢？可以看到执行器函数接受两个参数，一个是成功的执行resolve，一个失败的执行reject
+exector()函数中具体做了什么呢？可以看到执行器函数接受两个参数，一个是成功的执行resolve，一个失败的执行reject，那我们接下来将执行器的两个参数也写进去
 ```
 class Promise {
     constructor(exector) {
@@ -50,7 +50,7 @@ class Promise {
 }
 module.exports = Promise
 ```
-这里我们要知道默认promise有三个状态，初始态pendding => resolve 成功态fulfilled, 初始态pendding => reject 失败态rejected，并且只有在pendding时候才可以改变状态，此过程不可逆。那么我们就可以在成功执行的函数resolve中改变状态为fulfilled，失败执行的函数reject中改变状态为rejected。并且无论成功或者失败执行的函数都需要将成功的值或失败的原因返回
+这里我们要知道默认promise有三个状态，pendding（初始态）、fulfilled（成功态）、rejected（失败态），并且只有在pendding时候才可以改变状态，由pendding => reject，由pendding => resolve，此过程不可逆。那么我们就可以在成功执行的函数resolve中改变状态为fulfilled，失败执行的函数reject中改变状态为rejected。并且无论成功或者失败执行的函数都需要将成功的值或失败的原因返回
 所以我们先来定义三种状态：PENDDING，FULFILLED，REJECTED
 ```
 const PENDDING = 'PENDDING'
@@ -85,7 +85,7 @@ class Promise {
 }
 module.exports = Promise
 ```
-继续观察我们的Promise的基础用法，不难发现每个promise都有一个then方法,此方法有两个可选参数成功后的回调onFulfilled，失败后的回调onRejected,没传的话给默认参数，
+继续观察我们的Promise的基础用法，不难发现每个promise都有一个then方法,此方法有两个可选参数，那就是成功后的回调onFulfilled和失败后的回调onRejected,没传的话给默认参数，
 接下里给咱们自己的promise也加上then方法
 ```
 const PENDDING = 'PENDDING'
@@ -145,7 +145,7 @@ p.then(data=>{
     console.log(err)
 })
 ```
-同步的时候我们是直接触发，那异步的时候呢？没错，就是使用发布-订阅的方式，此时我们就需要将需要发布的事件先订阅，到成功或失败时在依次执行这些回调。
+同步的时候我们是直接触发，那异步的时候呢？没错，这里我们使用发布-订阅的方式，此时我们就需要将需要发布的事件先订阅，到成功或失败时在依次执行这些回调。
 接下来我们加上这块的代码，定义onResolvedCallbacks，onRejectedCallbacks分别存储成功和失败需要执行的函数。
 
 ```
@@ -161,7 +161,7 @@ class Promise {
         // 初始化为初始态
         this.status = PENDDING
         // 存储成功时需要执行的事件的数组
-        this.onResolvedCallbacks = []
+        <font color="#dd0000">this.onResolvedCallbacks = []</font>
         // 存储失败时需要执行的事件的数组
         this.onRejectedCallbacks = []
         // 成功的执行函数
