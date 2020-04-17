@@ -20,5 +20,4 @@ tags:
 
 链表是一组节点组成的集合
 
-![图片1]('/img/post-bg-js-rwd.jpg')
-![avatar](1.png)
+![图片1](/img/linked-list/1.png)
