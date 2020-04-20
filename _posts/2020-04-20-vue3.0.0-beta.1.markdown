@@ -1,0 +1,54 @@
+---
+layout:     post
+title:      "vue3.0.0-beta.1 今天它来了"
+subtitle:   "本文将带大家快速搭建基于 Vue 3.0 的项目框架"
+date:       2020-04-20 16:22:12
+author:     "zack"
+header-img: "img/post-bg-js-rwd.jpg"
+catalog: true
+tags:
+    - vue
+---
+
+### 序
+
+    2020年4月17日凌晨vue3.0 beta 了。
+
+### 项目初始化
+
+##### 安装vue-cli
+```
+npm install -g @vue/cli
+```
+安装完使用`vue -V`可以看到我的版本是`@vue/cli 4.3.1`的，cli版本只要在3.x以上即可。
+
+##### 创建项目
+```
+ vue create vue-3.0.0-beta.1-demo
+```
+输入完命令会出现交互的弹窗，我一次选的是：
+1. `Manually select features`
+2. 第二项我勾选了Babel、Router、CSS Pre-processors、Vuex、Linter/Formatter
+后面根据大家的需求都是些Y/N的选项可自己选择下。
+最后回车后自动安装依赖，我在这里就卡到下面这个界面了。
+![使用node/12.16.2](/img/vue3.0/ka.jpg)
+卡在这里我一开始以为是没有使用淘宝源所以很慢，所以为了加快安装依赖，我使用淘宝源加快初始化项目。
+```
+vue create -r https://registry.npm.taobao.org vue-3.0.0-beta.1-demo
+```
+结果还是卡在这里不动，所以排除npm源的问题，于是又看了下我的node版本`node/12.16.2`，于是通过node版本管理器n切换到`node/10.20.1`,
+重新尝试初始化项目，很快项目就创建完毕了。
+
+##### 升级3.0
+由于vue-cli没有直接支持创建3.0项目，所以需要通过插件升级，我们输入指令：
+```
+vue add vue-next
+```
+安装完成后会发现vue的版本已经是`3.0.0-beta.1`，vue-router和vuex也都升级到4.0的版本。
+![升级3.0](/img/vue3.0/3.0.jpg)
+##### 启动项目
+```
+ npm run serve
+```
+
+### 3.0初体验
