@@ -44,7 +44,7 @@ vue create -r https://registry.npm.taobao.org vue-3.0.0-beta.1-demo
 vue add vue-next
 ```
 安装完成后会发现vue的版本已经是`3.0.0-beta.1`，vue-router和vuex也都升级到4.0的版本。
-![升级3.0](/img/vue3.0/3.0.jpg)
+![升级3.0](/img/vue3.0/3.0.png)
 ##### 启动项目
 ```
  npm run serve
