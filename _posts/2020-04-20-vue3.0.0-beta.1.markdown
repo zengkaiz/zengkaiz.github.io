@@ -11,8 +11,7 @@ tags:
 ---
 
 ### 序
-
-    2020年4月17日凌晨vue3.0 beta 了。
+2020年4月17日凌晨vue3.0 beta 了。
 
 ### 项目初始化
 
@@ -52,3 +51,50 @@ vue add vue-next
 ```
 
 ### 3.0初体验
+
+首先创建个页面路由，和2.x并无差别。
+```
+{
+  path: '/test',
+  name: 'test',
+  component: () => import(/* webpackChunkName: "about" */ '../views/test.vue')
+}
+```
+然后在`test.vue`里面把官网给的基本示例拿过来
+```
+<template>
+  <button @click="increment">
+    Count is: {{ state.count }}, double is: {{ state.double }}
+  </button>
+</template>
+
+<script>
+import { reactive, computed } from 'vue'
+
+export default {
+  setup() {
+    const state = reactive({
+      count: 0,
+      double: computed(() => state.count * 2)
+    })
+
+    function increment() {
+      state.count++
+    }
+
+    return {
+      state,
+      increment
+    }
+  }
+}
+</script>
+```
+##### setup
+* 调用时间：创建组件实例时，在初始道具解析后立即调用。在生命周期方面，它在beforeCreate挂接之前被调用。
+* 模板使用：可以看到`setup`返回的state对象和方法被合并到组件模板的渲染上下文中
+
+##### computed
+代码中可以看到计算属性computed是一个方法，里面包含了一个回调函数，当计算属性返回结果是会自动获取返回的结果
+
+##### watch
