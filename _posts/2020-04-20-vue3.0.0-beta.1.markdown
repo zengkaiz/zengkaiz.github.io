@@ -4,7 +4,7 @@ title:      "vue3.0.0-beta.1 今天它来了"
 subtitle:   "本文将带大家快速搭建基于 Vue 3.0 的项目框架"
 date:       2020-04-20 16:22:12
 author:     "zack"
-header-img: "img/post-bg-js-rwd.jpg"
+header-img: "img/post-bg-2015.jpg"
 catalog: true
 tags:
     - vue
@@ -63,13 +63,15 @@ vue add vue-next
 然后在`test.vue`里面把官网给的基本示例拿过来
 ```
 <template>
-  <button @click="increment">
+  <div ref="root">
+   <button @click="increment">
     Count is: {{ state.count }}, double is: {{ state.double }}
-  </button>
+   </button>
+  </div>
 </template>
 
 <script>
-import { reactive, computed } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUpdated, onUnmounted, getCurrentInstance } from 'vue'
 
 export default {
   setup() {
@@ -77,14 +79,32 @@ export default {
       count: 0,
       double: computed(() => state.count * 2)
     })
-
+    const { ctx } = getCurrentInstance()
+    console.log(ctx.$router.currentRoute)
+    const userName = computed(()=>ctx.$store.state.userName)
+    console.log(userName)
     function increment() {
       state.count++
     }
 
+    watch(() => state.count, val=>{
+        console.log(`watch:${val}`)
+    })
+    onMounted(()=>{
+        console.log('mounted')
+        console.log(root.value)
+    })
+    onUpdated(()=>{
+        console.log('updated')
+    })
+    onUnmounted(()=>{
+        console.log('unmounted')
+    })
+
     return {
       state,
-      increment
+      increment,
+      root
     }
   }
 }
@@ -98,3 +118,49 @@ export default {
 代码中可以看到计算属性computed是一个方法，里面包含了一个回调函数，当计算属性返回结果是会自动获取返回的结果
 
 ##### watch
+同样也是一个方法，它包含两个参数，第一个参数是要监听的值，第二个是触发监听器的回调函数。
+
+##### 生命周期
+官网给出的2.X生命周期和Composition API之间的映射：
+* ~~beforeCreate~~ ->使用 setup()
+* ~~created~~ ->使用 setup()
+* beforeMount -> onBeforeMount
+* mounted -> onMounted
+* beforeUpdate -> onBeforeUpdate
+* updated -> onUpdated
+* beforeDestroy -> onBeforeUnmount
+* destroyed -> onUnmounted
+* errorCaptured -> onErrorCaptured
+
+##### 获取路由
+上面例子中，我用了`getCurrentInstance`获取了当前组件的实例，然后`ctx`获取当前实例的上下文，`ctx.$router`拿到
+Vue Route实例，里面的currentRoute里有当前路由的信息。
+
+##### vuex相关
+1. 首先定义vuex和之前并无差别，在src/store/index.js中定义
+```
+import Vuex from 'vuex'
+
+export default Vuex.createStore({
+  state: {
+    userName: 'zack'
+  },
+  mutations: {
+    setUserName(state, value){
+      state.userName = value
+    }
+  },
+  actions: {
+  },
+  modules: {
+  }
+});
+```
+2. 在test.vue使用vuex中定义的userName，通过计算属性`computed`和当前实例`ctx`可以获取到vuex中定义的userName
+```
+const userName = computed(()=>ctx.$store.state.userName)
+```
+3. 更新vuex状态也是和之前一样使用`commit`去更新
+```
+ctx.$store.commit('setUserName', 'zengkaiz')
+```
