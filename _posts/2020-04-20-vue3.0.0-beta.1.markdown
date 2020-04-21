@@ -140,7 +140,6 @@ Vue Route实例，里面的currentRoute里有当前路由的信息。
 1. 首先定义vuex和之前并无差别，在src/store/index.js中定义
 ```
 import Vuex from 'vuex'
-
 export default Vuex.createStore({
   state: {
     userName: 'zack'
@@ -156,10 +155,12 @@ export default Vuex.createStore({
   }
 });
 ```
+
 2. 在test.vue使用vuex中定义的userName，通过计算属性`computed`和当前实例`ctx`可以获取到vuex中定义的userName
 ```
 const userName = computed(()=>ctx.$store.state.userName)
 ```
+
 3. 更新vuex状态也是和之前一样使用`commit`去更新
 ```
 ctx.$store.commit('setUserName', 'zengkaiz')
