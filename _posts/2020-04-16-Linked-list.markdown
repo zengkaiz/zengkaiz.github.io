@@ -86,7 +86,7 @@ function insert(newElement, item) {
 function findPrevious(item) {
     let previousNode = this.head
     while (previousNode.next.element !== item && !(previousNode.next == null)) {
-        previousNode = previousNode.next()
+        previousNode = previousNode.next
     }
     return previousNode
 }
@@ -95,7 +95,7 @@ function findPrevious(item) {
 ```
 function remove(item) {
     let previousNode = this.findPrevious(item)
-    while (!(previous.next == null)) {
+    while (!(previousNode.next == null)) {
         previousNode.next = previousNode.next.next
     }
 }
