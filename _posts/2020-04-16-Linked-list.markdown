@@ -95,7 +95,7 @@ function findPrevious(item) {
 ```
 function remove(item) {
     let previousNode = this.findPrevious(item)
-    while (!(previousNode.next == null)) {
+    if (!(previousNode.next == null)) {
         previousNode.next = previousNode.next.next
     }
 }
